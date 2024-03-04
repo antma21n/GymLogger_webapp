@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 15px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <!-- <input type="file" id="jsonFileInput" accept=".json" onchange="handleFileSelect(event)"> -->
+    <button id="loadFirebase" onclick="handleFirebaseButton()">Load from Firebase</button>
+    <select id="exerciseSelect" onchange="handleExerciseSelect(event)"></select>
+    <table id="exerciseTable">
+        <tr>
+            <th>Date</th>
+            <th>Weight</th>
+            <th>Reps</th>
+        </tr>
+    </table>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        // Your Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyBd4hXC73f1OTPnZQmTMB8O7wglS2K0VnY",
+        authDomain: "gym-logger0.firebaseapp.com",
+        projectId: "gym-logger0",
+        storageBucket: "gym-logger0.appspot.com",
+        messagingSenderId: "201737999555",
+        appId: "1:201737999555:web:57b8acc3b579c5db593e76",
+        measurementId: "G-CDKVP5NPYS"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
+
+        let jsonData = [];
+        db.collection('workouts_prod').get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data());
+                // jsonData.push(doc.data());
+                //append data to jsonData
+                jsonData.push(doc.data());
+            });
+        });
+        console.log(jsonData)
+
+        let uniqueExercises = new Set();
+        var cleanData = {};
+
+        function findBestSet(exerciseName, data) {
+            var bestSets = [];
+            data.forEach(day => {
+                day.exercises.forEach(exercise => {
+                    if (exercise.exerciseName === exerciseName) {
+                        console.log(exerciseName)
+                        for (let i = 0; i < exercise.numSets; i++) {
+                            bestSets.push({
+                                exerciseName: exercise.exerciseName,
+                                date: day.currentDate,
+                                weight: exercise.weights[i],
+                                reps: exercise.reps[i]
+                            });
+                        }
+                    }
+                });
+            });
+
+            bestSets.sort((a, b) => b.weight - a.weight || b.reps - a.reps);
+            //remove duplicates
+            bestSets = bestSets.filter((set, index, self) =>
+                index === self.findIndex((t) => (
+                    t.exerciseName === set.exerciseName && t.date === set.date
+                ))
+            );
+            //put data in object called exersiseName
+            cleanData[exerciseName] = bestSets;
+            bestSets.forEach(set => {
+                // console.log(`${set.exerciseName}, ${set.date}, ${set.weight}, ${set.reps}`);
+            });
+            // console.log(bestSets);
+        }
+
+        function handleFirebaseButton() {
+            // console.log(jsonData);
+            // jsonData = JSON.parse(jsonData);
+            findUniqueExercises(jsonData)
+            populateExerciseSelect(uniqueExercises);
+            uniqueExercises.forEach(exercise => {
+                findBestSet(exercise, jsonData);
+            });
+            // handleExerciseSelect({target: {value: 0}});
+        }
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                jsonData = JSON.parse(event.target.result);
+                findUniqueExercises(jsonData)
+                populateExerciseSelect(uniqueExercises);
+                uniqueExercises.forEach(exercise => {
+                    findBestSet(exercise, jsonData);
+                });
+            };
+            reader.readAsText(file);
+        }
+
+        function findUniqueExercises(data) {
+            data.forEach(workout => {
+                workout.exercises.forEach(exercise => {
+                    uniqueExercises.add(exercise.exerciseName);
+                });
+            });
+            console.log(Array.from(uniqueExercises));
+        }
+
+        function populateExerciseSelect() {
+            const select = document.getElementById('exerciseSelect');
+            select.innerHTML = '';
+            uniqueExercises.forEach((exercise, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.text = exercise;
+                select.appendChild(option);
+            });
+        };
+
+        function handleExerciseSelect(event) {
+            const table = document.getElementById('exerciseTable');
+            const tableData = cleanData[event.target.value]
+            //sort by date /! Check this
+            tableData.sort((a, b) => new Date(b.date) - new Date(a.date));
+            table.innerHTML = '<tr><th>Date</th><th>Weight</th><th>Reps</th></tr>';
+
+            tableData.forEach((set) => {
+                const row = document.createElement('tr');
+                const dateCell = document.createElement('td');
+                dateCell.textContent = set.date;
+                const weightCell = document.createElement('td');
+                weightCell.textContent = set.weight;
+                const repsCell = document.createElement('td');
+                repsCell.textContent = set.reps;
+                row.appendChild(dateCell);
+                row.appendChild(weightCell);
+                row.appendChild(repsCell);
+                table.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f5f5f5;
+        }
+        header, main, footer {
+            padding: 20px;
+            color: #333;
+        }
+        header {
+            background-color: #007BFF;
+            color: white;
+        }
+        .exersise-name {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+
+        }
+        .dropdown, .date {
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+        .content-div {
+            margin: 10px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin: 10px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .input-rep-weight-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .weight, .reps {
+            flex: 1;
+            margin: 5px;
+            box-sizing: border-box;
+            width: 50%;
+        }
+        .footer-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    
+</head>
+<body>
+    <header>
+        <h1>Workout Tracker</h1>
+        <select class="dropdown" id="day-title">
+            <option value="">Select Workout Group...</option>
+            <option value="Push">Push</option>
+            <option value="Pull">Pull</option>
+            <option value="Legs">Legs</option>
+            <option value="ShouldersNarms">Shoulders and Arms</option>
+        </select>
+        <input type="date" class="date" id="current-date">
+    </header>
+    <main>
+    </main>
+    <footer>
+        <button id="add-exersise">Add Exersise</button>  
+        <button id="test_confirm">Confirm</button>
+        <button id="submitReturn" style="display: none;">Submitted!</button>
+    </footer>
+    <script>
+
+        var pushExersiseOptions = ["Bench Press", "Incline Bench Press", "Dumbbell Bench Press", "Dumbbell Incline Bench Press", 
+                                    "Tricep Pushdowns", " Seated Skull Crushers",
+                                    "Laterial Raise", "Front Raise", "Dumbbell Shoulder Press", "Arnold Press"];
+        
+        var pullExersiseOptions = ["Pull Ups", "Chin Ups", "Lat Pulldown", "Single Arm Machine Row", "Cable Row", "Bent Over Row", 
+                                    "Barbell Curl", "Dumbbell Curl", "Hammer Curl", "Preacher Curl", 
+                                    "Face Pulls", "Rear Delt Dec", "Shrugs"];
+
+        var legsExersiseOptions = ["Hack Squat","Belt Squat","Squats","RDL","Deadlift", "Leg Press", "Leg Extension", "Hanstring Curl", "Calf Raise"];
+
+        var shouldersNarmsExersiseOptions = ["Laterial Raise", "Front Raise", "Dumbbell Shoulder Press", "Arnold Press", 
+                                            "Tricep Pushdowns", " Seated Skull Crushers", "Barbell Curl", "Dumbbell Curl", 
+                                            "Hammer Curl", "Preacher Curl", "Face Pulls", "Rear Delt Dec", "Shrugs"];
+            
+        document.getElementById('add-exersise').addEventListener('click', () => {
+            if (document.getElementById('day-title').value == "" || document.getElementById('current-date').value == "") {
+                alert("Please select a workout group and date before adding an exersise.");
+                return;
+            }
+            const exerciseContainer = document.createElement('div');
+            exerciseContainer.className = 'container';
+
+            const exersiseNameContainer = document.createElement('div');
+            exersiseNameContainer.className = 'input-group';
+
+            const setContainer = document.createElement('div');
+            setContainer.className = 'input-group';
+
+            const addLabel = document.createElement('div');
+            addLabel.style.display = 'flex';
+            //bottom border
+            addLabel.style.borderBottom = '1px solid black';
+            addLabel.style.margin = '5px';
+            addLabel.innerHTML = '<div class="weight" style="text-align: center">Weight</div><div class="reps" style="text-align: center">Reps</div>';
+
+            const exersiseLabel = document.createElement('label');
+            const exersiseInput = document.createElement('select');
+            if (document.getElementById('day-title').value == "Push") {
+                pushExersiseOptions.forEach((option) => {
+                    var opt = document.createElement('option');
+                    opt.textContent = option;
+                    opt.value = option;
+                    exersiseInput.appendChild(opt);
+                });
+            } else if (document.getElementById('day-title').value == "Pull") {
+                pullExersiseOptions.forEach((option) => {
+                    var opt = document.createElement('option');
+                    opt.textContent = option;
+                    opt.value = option;
+                    exersiseInput.appendChild(opt);
+                });
+            } else if (document.getElementById('day-title').value == "Legs") {
+                legsExersiseOptions.forEach((option) => {
+                    var opt = document.createElement('option');
+                    opt.textContent = option;
+                    opt.value = option;
+                    exersiseInput.appendChild(opt);
+                });
+            } else if (document.getElementById('day-title').value == "ShouldersNarms") {
+                shouldersNarmsExersiseOptions.forEach((option) => {
+                    var opt = document.createElement('option');
+                    opt.textContent = option;
+                    opt.value = option;
+                    exersiseInput.appendChild(opt);
+                });
+            }
+            exersiseInput.className = 'exersise-name';
+
+            const addsetButton = document.createElement('button');
+            addsetButton.textContent = 'Add Set';
+            addsetButton.className = 'add-set';
+            addsetButton.addEventListener('click', function() {
+                addsetButton.insertAdjacentElement('beforebegin', createSetInput());
+            });
+            // Idk how to get this button to work.
+
+            exerciseContainer.appendChild(exersiseNameContainer);
+            exerciseContainer.appendChild(setContainer);
+            exersiseNameContainer.appendChild(exersiseLabel);
+            exersiseNameContainer.appendChild(exersiseInput);
+            setContainer.appendChild(addLabel);
+            // add first set input fields
+
+            const setContainerFirst = createSetInput();
+            setContainer.appendChild(setContainerFirst);
+            setContainer.appendChild(addsetButton);
+
+            document.querySelector('main').appendChild(exerciseContainer);
+        });
+
+        function createSetInput() {
+            const setContainer = document.createElement('div');
+            setContainer.className = 'input-rep-weight-group';
+            
+            const weightInput = document.createElement('input');
+            weightInput.type = 'number';
+            weightInput.className = 'weight';
+
+            const repsInput = document.createElement('input');
+            repsInput.type = 'number';
+            repsInput.className = 'reps';
+
+            setContainer.appendChild(weightInput);
+            
+            const breakLine = document.createElement('br');
+            setContainer.appendChild(breakLine);
+            
+            setContainer.appendChild(repsInput);
+
+            return setContainer;
+        }
+
+    </script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script></script>
+    <script type="module">
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyBd4hXC73f1OTPnZQmTMB8O7wglS2K0VnY",
+        authDomain: "gym-logger0.firebaseapp.com",
+        projectId: "gym-logger0",
+        storageBucket: "gym-logger0.appspot.com",
+        messagingSenderId: "201737999555",
+        appId: "1:201737999555:web:57b8acc3b579c5db593e76",
+        measurementId: "G-CDKVP5NPYS"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        var provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth()
+        .signInWithPopup(provider)
+        .then((result) => {
+            console.log(result);
+            var credential = result.credential;
+
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            var token = credential.accessToken;
+            // The signed-in user info.
+            var user = result.user;
+            
+            //print user name
+            console.log(user.displayName)
+
+            // IdP data available in result.additionalUserInfo.profile.
+        }).catch((error) => {
+            console.log("error")
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorMessage)
+            var email = error.email;
+            var credential = error.credential;
+        });
+        var db = firebase.firestore(app); // Use getFirestore() after initializing the app
+        var data = {};
+        console.log(db);
+        // Push data to firebase
+        document.getElementById('test_confirm').addEventListener('click', () => {
+            document.getElementById('test_confirm').style.display = 'none';
+            document.getElementById('submitReturn').style.display = 'inline';
+            data = {
+                dayTitle: document.getElementById('day-title').value,
+                currentDate: document.getElementById('current-date').value,
+                exercises: []
+            }
+            //loop throough container divs
+            for(let i = 0; i < document.getElementsByClassName('container').length; i++) {
+                data.exercises[i] = {
+                    exerciseName: document.getElementsByClassName('container')[i].getElementsByClassName('exersise-name')[0].value,
+                    numSets: 0,
+                    weights: [],
+                    reps: []
+                }
+                for(let j = 0; j < document.getElementsByClassName('container')[i].getElementsByClassName('input-group').length; j++) {
+                    data.exercises[i].weights[j] = document.getElementsByClassName('container')[i].getElementsByClassName('input-group')[1].getElementsByClassName('input-rep-weight-group')[j].getElementsByClassName('weight')[0].value;
+                    data.exercises[i].reps[j] = document.getElementsByClassName('container')[i].getElementsByClassName('input-group')[1].getElementsByClassName('input-rep-weight-group')[j].getElementsByClassName('reps')[0].value;
+
+                    //remove undefined values from weight and rep arrays
+                    data.exercises[i].weights = data.exercises[i].weights.filter(function (el) {
+                        return el != null;
+                    });
+                    data.exercises[i].reps = data.exercises[i].reps.filter(function (el) {
+                        return el != null;
+                    });
+                    data.exercises[i].numSets++;
+                    // console.log(document.getElementsByClassName('container')[i].getElementsByClassName('input-group')[j].getElementsByClassName('reps')[0].value);
+                    // console.log(document.getElementsByClassName('container')[i].getElementsByClassName('input-group')[j].getElementsByClassName('weight')[0].value);
+                }
+            }
+            console.log(data);
+            // db.collection("workouts_prod").add(data) //enable this when ready to push to production
+            db.collection("workouts").add(data) //disable this when ready to push to production
+            .then((docRef) => {
+                console.log("Document written with ID: ", docRef.id);
+            })
+        });
+      </script>
+    <div class="content-div">
+
+        <h2>TODO:</h2>
+            <!-- <br>- Add Firebase -->
+            <!-- <br>- Add user authentication NOT BIG DEAL. needed if deploying-->
+    
+            <br>- Make sure mobile version looks good
+            <br>- deploy project instead of using local files
+            <br>- error handling
+            <br>    - if user tries to submit without filling out all fields
+            <br>    - if user tries to submit without adding any sets
+    </div>
+</body>
+</html>
