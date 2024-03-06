@@ -23,6 +23,9 @@
             width: 100%;
             height: 100%;
             box-sizing: border-box;
+            font-size: x-large;
+            text-align: center;
+            border: white;
 
         }
         .dropdown, .date {
@@ -72,10 +75,82 @@
         button:hover {
             background-color: #0056b3;
         }
+        .increment-button {
+            padding: 5px 10px;
+            margin: 2px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #info-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #FFA500;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #info-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #FFA500;
+            padding: 10px;
+            width: 70%;
+            border-radius: 5px;
+        }
+        .hidden {
+            display: none;
+        }
+        pre {
+            white-space: pre-wrap;
+        }
     </style>
-    
 </head>
 <body>
+    <div id="info-button">
+        <i class="fas fa-info">i</i>
+    </div>
+    
+    <div id="info-popup" class="hidden">
+        <pre>
+<h2>Info:</h2>
+- To Start, select a workout group from the dropdown
+- Next, select the date this workout was completed
+- Now, you can add an exersise to the workout group
+    - Click Add Exersise to add an exersise to the workout group
+    - Click Add Set to add a set to the exersise you added
+    - When you are done click Confirm to submit the workout to the database     
+- If you make a mistake, click Undo to remove the last exersise you added
+- To see your data, go to the GymVisualizer page
+        </pre>
+        <pre>
+<h2>Note:</h2>
+This is a work in progress. Do not use this as your main source of tracking until final release. If you have any suggestions or find any bugs, please let me know.
+        </pre>
+        <!-- <pre>
+<h2>Known Bugs and Issues:</h2>
+- Remove Set button does not work (hidden for now)
+- If you remove all sets from a exersise, there is an error on line 220
+- Misc Error Handling
+    - if user tries to submit without filling out all fields
+    - if user tries to submit without adding any sets
+- Not fully deployed to production
+- No user authentication
+        </pre> -->
+    </div>
     <header>
         <h1>Workout Tracker</h1>
         <select class="dropdown" id="day-title">
@@ -91,10 +166,14 @@
     </main>
     <footer>
         <button id="add-exersise">Add Exersise</button>  
+        <button id="undo" onclick="removeExersiseContainer()">Undo</button>
         <button id="test_confirm">Confirm</button>
         <button id="submitReturn" style="display: none;">Submitted!</button>
     </footer>
     <script>
+
+        var containerList = [];
+        var setList = [];
 
         var pushExersiseOptions = ["Bench Press", "Incline Bench Press", "Dumbbell Bench Press", "Dumbbell Incline Bench Press", 
                                     "Tricep Pushdowns", " Seated Skull Crushers",
@@ -109,8 +188,17 @@
         var shouldersNarmsExersiseOptions = ["Laterial Raise", "Front Raise", "Dumbbell Shoulder Press", "Arnold Press", 
                                             "Tricep Pushdowns", " Seated Skull Crushers", "Barbell Curl", "Dumbbell Curl", 
                                             "Hammer Curl", "Preacher Curl", "Face Pulls", "Rear Delt Dec", "Shrugs"];
-            
+ 
+        document.getElementById('info-button').addEventListener('click', function() {
+            var popup = document.getElementById('info-popup');
+            if (popup.classList.contains('hidden')) {
+                popup.classList.remove('hidden');
+            } else {
+                popup.classList.add('hidden');
+            }
+        });
         document.getElementById('add-exersise').addEventListener('click', () => {
+            
             if (document.getElementById('day-title').value == "" || document.getElementById('current-date').value == "") {
                 alert("Please select a workout group and date before adding an exersise.");
                 return;
@@ -120,6 +208,7 @@
 
             const exersiseNameContainer = document.createElement('div');
             exersiseNameContainer.className = 'input-group';
+            exersiseNameContainer.style.padding = '5px'
 
             const setContainer = document.createElement('div');
             setContainer.className = 'input-group';
@@ -170,7 +259,13 @@
             addsetButton.addEventListener('click', function() {
                 addsetButton.insertAdjacentElement('beforebegin', createSetInput());
             });
-            // Idk how to get this button to work.
+
+            const removeSetButton = document.createElement('button');
+            removeSetButton.textContent = 'Remove Set';
+            removeSetButton.className = 'remove-set';
+            removeSetButton.addEventListener('click', function() {
+                setList = removeSetContainer(setList);
+            });
 
             exerciseContainer.appendChild(exersiseNameContainer);
             exerciseContainer.appendChild(setContainer);
@@ -182,8 +277,12 @@
             const setContainerFirst = createSetInput();
             setContainer.appendChild(setContainerFirst);
             setContainer.appendChild(addsetButton);
+            // setContainer.appendChild(removeSetButton); //remove set button not working
+            // - need a seperate list for each exersise. all in one list. if you remove all sets from list. there is an error on line 220
+
 
             document.querySelector('main').appendChild(exerciseContainer);
+            containerList.push(exerciseContainer);
         });
 
         function createSetInput() {
@@ -193,19 +292,72 @@
             const weightInput = document.createElement('input');
             weightInput.type = 'number';
             weightInput.className = 'weight';
+            weightInput.value = 0;
+
+            const downWeightButton = document.createElement('button');
+            downWeightButton.textContent = '-';
+            downWeightButton.addEventListener('click', function() {
+                weightInput.value = parseInt(weightInput.value) - 5;
+            });
+            downWeightButton.className = 'increment-button';
+            const upWeightButton = document.createElement('button');
+            upWeightButton.textContent = '+';
+            upWeightButton.addEventListener('click', function() {
+                weightInput.value = parseInt(weightInput.value) + 5;
+            });
+            upWeightButton.className = 'increment-button';
 
             const repsInput = document.createElement('input');
             repsInput.type = 'number';
             repsInput.className = 'reps';
+            repsInput.value = 0;
+
+            const downRepsButton = document.createElement('button');
+            downRepsButton.textContent = '-';
+            downRepsButton.addEventListener('click', function() {
+                repsInput.value = parseInt(repsInput.value) - 1;
+            });
+            downRepsButton.className = 'increment-button';
+            const upRepsButton = document.createElement('button');
+            upRepsButton.textContent = '+';
+            upRepsButton.addEventListener('click', function() {
+                repsInput.value = parseInt(repsInput.value) + 1;
+            });
+            upRepsButton.className = 'increment-button';
 
             setContainer.appendChild(weightInput);
+            setContainer.appendChild(downWeightButton);
+            setContainer.appendChild(upWeightButton);
             
             const breakLine = document.createElement('br');
             setContainer.appendChild(breakLine);
             
             setContainer.appendChild(repsInput);
+            setContainer.appendChild(downRepsButton);
+            setContainer.appendChild(upRepsButton);
 
+            setList.push(setContainer);
             return setContainer;
+        }
+
+        //remove last exersise container
+        function removeExersiseContainer() {
+            if (containerList.length == 0) {
+                alert("No exersises to remove");
+                return;
+            }
+            containerList[containerList.length - 1].remove(); // 
+            containerList.pop(); //remove last element from array
+        }
+
+        function removeSetContainer(setList) {
+            if (setList.length == 0) {
+                alert("No exersises to remove");
+                return;
+            }
+            setList[setList.length - 1].remove(); // 
+            setList.pop(); //remove last element from array
+            return setList;
         }
 
     </script>
@@ -254,6 +406,7 @@
             var email = error.email;
             var credential = error.credential;
         });
+
         var db = firebase.firestore(app); // Use getFirestore() after initializing the app
         var data = {};
         console.log(db);
@@ -274,9 +427,12 @@
                     weights: [],
                     reps: []
                 }
-                for(let j = 0; j < document.getElementsByClassName('container')[i].getElementsByClassName('input-group').length; j++) {
-                    data.exercises[i].weights[j] = document.getElementsByClassName('container')[i].getElementsByClassName('input-group')[1].getElementsByClassName('input-rep-weight-group')[j].getElementsByClassName('weight')[0].value;
-                    data.exercises[i].reps[j] = document.getElementsByClassName('container')[i].getElementsByClassName('input-group')[1].getElementsByClassName('input-rep-weight-group')[j].getElementsByClassName('reps')[0].value;
+
+                let setElements = document.getElementsByClassName('container')[i].getElementsByClassName('input-group')[1].getElementsByClassName('input-rep-weight-group');
+
+                for(let j = 0; j < setElements.length; j++) {
+                    data.exercises[i].weights[j] = setElements[j].getElementsByClassName('weight')[0].value;
+                    data.exercises[i].reps[j] = setElements[j].getElementsByClassName('reps')[0].value;
 
                     //remove undefined values from weight and rep arrays
                     data.exercises[i].weights = data.exercises[i].weights.filter(function (el) {
@@ -286,8 +442,6 @@
                         return el != null;
                     });
                     data.exercises[i].numSets++;
-                    // console.log(document.getElementsByClassName('container')[i].getElementsByClassName('input-group')[j].getElementsByClassName('reps')[0].value);
-                    // console.log(document.getElementsByClassName('container')[i].getElementsByClassName('input-group')[j].getElementsByClassName('weight')[0].value);
                 }
             }
             console.log(data);
@@ -298,17 +452,5 @@
             })
         });
       </script>
-    <div class="content-div">
-
-        <h2>TODO:</h2>
-            <!-- <br>- Add Firebase -->
-            <!-- <br>- Add user authentication NOT BIG DEAL. needed if deploying-->
-    
-            <br>- Make sure mobile version looks good
-            <br>- deploy project instead of using local files
-            <br>- error handling
-            <br>    - if user tries to submit without filling out all fields
-            <br>    - if user tries to submit without adding any sets
-    </div>
 </body>
 </html>
