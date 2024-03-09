@@ -16,5 +16,5 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EVERYTHING_APP_1944A }}'
-          projectId: everything-app-1944a
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GYM_LOGGER0 }}'
+          projectId: gym-logger0
