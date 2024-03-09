@@ -440,6 +440,15 @@ This is a work in progress. Do not use this as your main source of tracking unti
         console.log(db);
         // Push data to firebase
         document.getElementById('test_confirm').addEventListener('click', () => {
+
+            //check authentication
+            if (firebase.auth().currentUser) {
+                console.log("user is signed in")
+            } else {
+                console.log("user is not signed in")
+                return; //exit function
+            }
+
             document.getElementById('test_confirm').style.display = 'none';
             document.getElementById('submitReturn').style.display = 'inline';
             data = {
@@ -474,11 +483,24 @@ This is a work in progress. Do not use this as your main source of tracking unti
                 }
             }
             console.log(data);
-            db.collection("workouts_prod").add(data) //enable this when ready to push to production
-            // db.collection("workouts").add(data) //disable this when ready to push to production
+            // db.collection("workouts_prod").add(data) //enable this when ready to push to production
+            // // db.collection("workouts").add(data) //disable this when ready to push to production
+            // .then((docRef) => {
+            //     console.log("Document written with ID: ", docRef.id);
+            // })
+            // .catch((error) => {
+            //     console.error("Error adding document: ", error);
+            // });
+
+            //add data to collection to specific user
+            db.collection("users").doc(firebase.auth().currentUser.uid).collection("workouts").add(data)
             .then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);
             })
+            .catch((error) => {
+                console.error("Error adding document: ", error);
+            });
+
         });
       </script>
 </body>
