@@ -160,7 +160,7 @@ This is a work in progress. Do not use this as your main source of tracking unti
         </pre> -->
     </div>
     <header>
-        <button onclick="SignInWithGoogle()">Sign In with Google</button>
+        <button id ="sign-in-button">Sign In with Google</button>
         <h1>Workout Tracker</h1>
         <select class="dropdown" id="day-title">
             <option value="">Select Workout Group...</option>
@@ -443,12 +443,16 @@ This is a work in progress. Do not use this as your main source of tracking unti
         var db = firebase.firestore(app); // Use getFirestore() after initializing the app
         var data = {};
         console.log(db);
+
+        document.getElementById('sign-in-button').addEventListener('click', SignInWithGoogle);
+
         // Push data to firebase
         document.getElementById('test_confirm').addEventListener('click', () => {
 
             //check authentication
-            if (firebase.auth().currentUser) {
-                console.log("user is signed in")
+            if  (firebase.auth().currentUser) {
+                console.log("user is signed in");
+                console.log(firebase.auth().currentUser.displayName);
             } else {
                 console.log("user is not signed in")
                 return; //exit function
