@@ -119,6 +119,25 @@
             width: 70%;
             border-radius: 5px;
         }
+        #sign-in-button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.25);
+            transition: background-color 0.3s ease;
+        }
+
+        #sign-in-button:hover {
+            background-color: #357ae8;
+        }
         .hidden {
             display: none;
         }
@@ -160,7 +179,7 @@ This is a work in progress. Do not use this as your main source of tracking unti
         </pre> -->
     </div>
     <header>
-        <button id ="sign-in-button">Sign In with Google</button>
+        <button id ="sign-in-button">Sign In with Google</button><div id="displayName"></div>
         <h1>Workout Tracker</h1>
         <select class="dropdown" id="day-title">
             <option value="">Select Workout Group...</option>
@@ -412,7 +431,23 @@ This is a work in progress. Do not use this as your main source of tracking unti
         const app = firebase.initializeApp(firebaseConfig);
         var provider = new firebase.auth.GoogleAuthProvider();
 
+        window.onload = function() {
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    console.log("user is signed in");
+                    console.log(user.displayName);
+                    document.getElementById('sign-in-button').style.display = 'none';
+                    document.getElementById('displayName').innerHTML = `Welcome back, ${user.displayName}!`;
+                } else {
+                    console.log("user is not signed in")
+                    document.getElementById('sign-in-button').style.display = 'inline';
+                    alert("Feel free to explore the web app. In order to store data, please sign in to submit workout data");
+                }
+            });
+        }
+
         function SignInWithGoogle() {
+            // data is not temporarly stored when redirecting
             console.log("sign in with google");
             firebase.auth()
             .signInWithRedirect(provider)
@@ -438,6 +473,7 @@ This is a work in progress. Do not use this as your main source of tracking unti
                 var email = error.email;
                 var credential = error.credential;
             });
+            document.getElementById('displayName').innerHTML = firebase.auth().currentUser.displayName;
         }
 
         var db = firebase.firestore(app); // Use getFirestore() after initializing the app
@@ -455,7 +491,14 @@ This is a work in progress. Do not use this as your main source of tracking unti
                 console.log(firebase.auth().currentUser.displayName);
             } else {
                 console.log("user is not signed in")
+                alert("Please sign in to submit workout data");
                 return; //exit function
+            }
+            
+            //check if fields are filled out
+            if (document.getElementById('day-title').value == "" || document.getElementById('current-date').value == "") {
+                alert("Please fill out all fields before submitting");
+                return;
             }
 
             document.getElementById('test_confirm').style.display = 'none';
@@ -503,7 +546,9 @@ This is a work in progress. Do not use this as your main source of tracking unti
             });
 
         });
+        document.getElementById('displayName').innerHTML = firebase.auth().currentUser.displayName;
       </script>
+
 </body>
 <!-- eventually I can have a second tab or div for the visualizer. Computers and tbalets
 can view it all at once and mobile can have a button to toggle. -->
