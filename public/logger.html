@@ -160,6 +160,7 @@ This is a work in progress. Do not use this as your main source of tracking unti
         </pre> -->
     </div>
     <header>
+        <button onclick="SignInWithGoogle()">Sign In with Google</button>
         <h1>Workout Tracker</h1>
         <select class="dropdown" id="day-title">
             <option value="">Select Workout Group...</option>
@@ -410,30 +411,34 @@ This is a work in progress. Do not use this as your main source of tracking unti
         // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
         var provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth()
-        .signInWithRedirect(provider)
-        .then((result) => {
-            console.log(result);
-            var credential = result.credential;
 
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            var token = credential.accessToken;
-            // The signed-in user info.
-            var user = result.user;
-            
-            //print user name
-            console.log(user.displayName)
-
-            // IdP data available in result.additionalUserInfo.profile.
-        }).catch((error) => {
-            console.log("error")
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log(errorMessage)
-            var email = error.email;
-            var credential = error.credential;
-        });
+        function SignInWithGoogle() {
+            console.log("sign in with google");
+            firebase.auth()
+            .signInWithRedirect(provider)
+            .then((result) => {
+                console.log(result);
+                var credential = result.credential;
+    
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                var token = credential.accessToken;
+                // The signed-in user info.
+                var user = result.user;
+                
+                //print user name
+                console.log(user.displayName)
+    
+                // IdP data available in result.additionalUserInfo.profile.
+            }).catch((error) => {
+                console.log("error")
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(errorMessage)
+                var email = error.email;
+                var credential = error.credential;
+            });
+        }
 
         var db = firebase.firestore(app); // Use getFirestore() after initializing the app
         var data = {};
