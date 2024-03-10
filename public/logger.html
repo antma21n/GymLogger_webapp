@@ -411,7 +411,7 @@ This is a work in progress. Do not use this as your main source of tracking unti
         const app = firebase.initializeApp(firebaseConfig);
         var provider = new firebase.auth.GoogleAuthProvider();
         firebase.auth()
-        .signInWithPopup(provider)
+        .signInWithRedirect(provider)
         .then((result) => {
             console.log(result);
             var credential = result.credential;
@@ -483,14 +483,6 @@ This is a work in progress. Do not use this as your main source of tracking unti
                 }
             }
             console.log(data);
-            // db.collection("workouts_prod").add(data) //enable this when ready to push to production
-            // // db.collection("workouts").add(data) //disable this when ready to push to production
-            // .then((docRef) => {
-            //     console.log("Document written with ID: ", docRef.id);
-            // })
-            // .catch((error) => {
-            //     console.error("Error adding document: ", error);
-            // });
 
             //add data to collection to specific user
             db.collection("users").doc(firebase.auth().currentUser.uid).collection("workouts").add(data)
