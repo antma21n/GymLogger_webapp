@@ -90,9 +90,9 @@ function createWorkoutCard(workoutType, workoutData) {
     card.className = 'workout-card';
     card.dataset.workout = workoutType;
 
+    // <p>${workoutData.description}</p>
     const content = `
         <h3>${workoutData.name}</h3>
-        <p>${workoutData.description}</p>
         <p>Exercises: ${workoutData.exercises.length ? workoutData.exercises.join(', ') : 'None'}</p>
         <p>Last performed: ${workoutData.lastPerformed}</p>
         <button class="workout-btn">Start</button>
