@@ -46,35 +46,34 @@ for (const muscleGroup in exercisesByMuscle) {
     muscleGroupSelect.appendChild(option);
 }
 
-// Predefined workouts with additional data. this would come from Firebase
 const workouts = {
     push: {
         name: 'Push Workout',
-        exercises: ['Bench Press', 'Shoulder Press', 'Tricep Extensions'],
+        exercises: ['Chest', 'Front and Side Delts', 'Triceps'],
         lastPerformed: '2023-05-15',
         description: 'Focus on pushing movements for chest, shoulders, and triceps.'
     },
     pull: {
         name: 'Pull Workout',
-        exercises: ['Pull-ups', 'Rows', 'Bicep Curls'],
+        exercises: ['Back', 'Rear Delts', 'Biceps'],
         lastPerformed: '2023-05-17',
         description: 'Target pulling movements for back and biceps.'
     },
     legs: {
         name: 'Legs Workout',
-        exercises: ['Squats', 'Deadlifts', 'Leg Press'],
+        exercises: ['Quads', 'Hamstrings', 'Glutes', 'Calves'],
         lastPerformed: '2023-05-19',
         description: 'Strengthen your lower body with compound movements.'
     },
     misc: {
         name: 'Misc Workout',
-        exercises: ['Plank', 'Russian Twists', 'Calf Raises'],
+        exercises: ['Abs', 'Calves'],
         lastPerformed: '2023-05-20',
         description: 'Mix of exercises for overall fitness and core strength.'
     },
     fullBody: {
         name: 'Full Body Workout',
-        exercises: ['Squats', 'Bench Press', 'Rows', 'Shoulder Press'],
+        exercises: ['Chest', 'Back', 'Arms', 'Shoulders', 'Legs'],
         lastPerformed: '2023-05-22',
         description: 'Complete full body workout targeting all major muscle groups.'
     },
