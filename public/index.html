@@ -1,71 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Logger</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="info-button">
-        <i class="fas fa-info">i</i>
-    </div>
-    
-    <div id="info-popup" class="hidden">
-        <pre>
-<h2>Info:</h2>
-- To Start, select a workout group from the dropdown
-- Next, select the date this workout was completed
-- Now, you can add an exersise to the workout group
-    - Click Add Exersise to add an exersise to the workout group
-    - Click Add Set to add a set to the exersise you added
-    - When you are done click Confirm to submit the workout to the database     
-- If you make a mistake, click Undo to remove the last exersise you added
-- To see your data, go to the GymVisualizer page
-        </pre>
-        <pre>
-<h2>Note:</h2>
-This is a work in progress. Do not use this as your main source of tracking until final release. If you have any suggestions or find any bugs, please let me know.
-        </pre>
-        <!-- <pre>
-<h2>Known Bugs and Issues:</h2>
-- Remove Set button does not work (hidden for now)
-- If you remove all sets from a exersise, there is an error on line 220
-- Misc Error Handling
-    - if user tries to submit without filling out all fields
-    - if user tries to submit without adding any sets
-- Not fully deployed to production
-- No user authentication
-        </pre> -->
-    </div>
     <header>
-        <button id ="sign-in-button">Sign In with Google</button><div id="displayName"></div>
-        <h1>Workout Tracker</h1>
-        <select class="dropdown" id="day-title">
-            <option value="">Select Workout Group...</option>
-            <option value="Push">Push</option>
-            <option value="Pull">Pull</option>
-            <option value="Legs">Legs</option>
-            <option value="ShouldersNarms">Shoulders and Arms</option>
-        </select>
-        <input type="date" class="date" id="current-date">
+        <h1>Gym Logger</h1>
+        <div class="header-controls">
+            <div class="toggle-container">
+                <input type="checkbox" id="modeToggle" class="toggle-input">
+                <label for="modeToggle" class="toggle-label">
+                    <span class="toggle-inner"></span>
+                    <span class="toggle-switch"></span>
+                </label>
+            </div>
+            <button id="loginBtn">Login</button>
+        </div>
     </header>
-    <main>
+
+    <main id="mainContent">
+        <div id="landingPage">
+            <div class="workout-grid" id="workoutGrid">
+                <!-- Workout cards will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <div id="workoutPage" style="display: none;">
+            <h2 id="exerciseName">Exercise Name</h2>
+            <div id="exerciseSelection" style="display: none;">
+                <input type="text" id="exerciseSearch" placeholder="Search for an exercise">
+                <select id="muscleGroupSelect">
+                    <option value="">All Muscle Groups</option>
+                </select>
+                <ul id="exerciseList"></ul>
+            </div>
+            <div id="sets"></div>
+            <button id="addSetBtn">Add Set</button>
+            <button id="removeSetBtn">Remove Set</button>
+            <button id="changeExerciseBtn">Change Exercise</button>
+            <button id="nextExerciseBtn">Next Exercise</button>
+            <button id="submitWorkoutBtn" style="display: none;">Submit Workout</button>
+        </div>
+
+        <div id="visualizationPage" style="display: none;">
+            <h2>Progress Visualization</h2>
+            <p>Your workout progress charts and graphs will be displayed here.</p>
+        </div>
     </main>
+
     <footer>
-        <button id="add-exersise">Add Exersise</button>  
-        <button id="undo" onclick="removeExersiseContainer()">Undo</button>
-        <button id="test_confirm">Confirm</button>
-        <button id="submitReturn" style="display: none;">Submitted!</button>
+        <p>&copy; 2023 Gym Logger. All rights reserved.</p>
     </footer>
-    
-    <script src="js/workout.js"></script>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="js/firebase-logger.js"></script>
-
+    <script src="app.js"></script>
 </body>
-<!-- eventually I can have a second tab or div for the visualizer. Computers and tbalets
-can view it all at once and mobile can have a button to toggle. -->
 </html>
