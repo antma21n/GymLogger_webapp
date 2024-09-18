@@ -47,39 +47,61 @@ for (const muscleGroup in exercisesByMuscle) {
 }
 
 const workouts = {
-    push: {
-        name: 'Push Workout',
-        exercises: ['Chest', 'Front and Side Delts', 'Triceps'],
+    // push: {
+    //     name: 'Push Workout',
+    //     musclegroups: ['Chest', 'Front and Side Delts', 'Triceps'],
+    //     exercises: [],
+    //     lastPerformed: '2023-05-15',
+    //     description: 'Focus on pushing movements for chest, shoulders, and triceps.'
+    // },
+    // pull: {
+    //     name: 'Pull Workout',
+    //     musclegroups: ['Back', 'Rear Delts', 'Biceps'],
+    //     lastPerformed: '2023-05-17',
+    //     description: 'Target pulling movements for back and biceps.'
+    // },
+    // legs: {
+    //     name: 'Legs Workout',
+    //     musclegroups: ['Quads', 'Hamstrings', 'Glutes', 'Calves'],
+    //     lastPerformed: '2023-05-19',
+    //     description: 'Strengthen your lower body with compound movements.'
+    // },
+    // misc: {
+    //     name: 'Misc Workout',
+    //     musclegroups: ['Abs', 'Calves'],
+    //     lastPerformed: '2023-05-20',
+    //     description: 'Mix of exercises for overall fitness and core strength.'
+    // },
+    // fullBody: {
+    //     name: 'Full Body Workout',
+    //     musclegroups: ['Chest', 'Back', 'Arms', 'Shoulders', 'Legs'],
+    //     lastPerformed: '2023-05-22',
+    //     description: 'Complete full body workout targeting all major muscle groups.'
+    // },
+    day1: {
+        name: 'DAY 1: Monday',
+        musclegroups: ['Chest', 'Back', 'Delts', 'Triceps'],
+        exercises: ['Bench Press', 'Pull Ups', 'Machine Rows', 'Lateral Raises','Bicep Curls'],
         lastPerformed: '2023-05-15',
         description: 'Focus on pushing movements for chest, shoulders, and triceps.'
     },
-    pull: {
-        name: 'Pull Workout',
-        exercises: ['Back', 'Rear Delts', 'Biceps'],
-        lastPerformed: '2023-05-17',
-        description: 'Target pulling movements for back and biceps.'
+    day2: {
+        name: 'DAY 2: Wednesday',
+        musclegroups: ['Chest', 'Back', 'Delts', 'Triceps'],
+        exercises: ['Bench Press', 'Pull Ups', 'Machine Rows', 'Lateral Raises','Tricep Pushdown'],
+        lastPerformed: '2023-05-15',
+        description: 'Focus on pushing movements for chest, shoulders, and triceps.'
     },
-    legs: {
-        name: 'Legs Workout',
-        exercises: ['Quads', 'Hamstrings', 'Glutes', 'Calves'],
-        lastPerformed: '2023-05-19',
-        description: 'Strengthen your lower body with compound movements.'
-    },
-    misc: {
-        name: 'Misc Workout',
-        exercises: ['Abs', 'Calves'],
-        lastPerformed: '2023-05-20',
-        description: 'Mix of exercises for overall fitness and core strength.'
-    },
-    fullBody: {
-        name: 'Full Body Workout',
-        exercises: ['Chest', 'Back', 'Arms', 'Shoulders', 'Legs'],
-        lastPerformed: '2023-05-22',
-        description: 'Complete full body workout targeting all major muscle groups.'
+    day3: {
+        name: 'DAY 3: Friday',
+        musclegroups: ['Chest', 'Back', 'Delts', 'Triceps'],
+        exercises: ['Shoulder Press', 'Lateral Raises', 'Chest Flies', 'Chin Ups', 'Bicep Curls', 'Tricep Pushdown'],
+        lastPerformed: '2023-05-15',
+        description: 'Focus on pushing movements for chest, shoulders, and triceps.'
     },
     fromScratch: {
         name: 'Start from Scratch',
-        exercises: [],
+        musclegroups: [],
         lastPerformed: 'N/A',
         description: 'Create a custom workout with exercises of your choice. (NOTE this is broken for submitting data dynamically)'
     }
@@ -93,7 +115,7 @@ function createWorkoutCard(workoutType, workoutData) {
     // <p>${workoutData.description}</p>
     const content = `
         <h3>${workoutData.name}</h3>
-        <p>Exercises: ${workoutData.exercises.length ? workoutData.exercises.join(', ') : 'None'}</p>
+        <p>Exercises: ${workoutData.musclegroups.length ? workoutData.musclegroups.join(', ') : 'None'}</p>
         <p>Last performed: ${workoutData.lastPerformed}</p>
         <button class="workout-btn">Start</button>
         ${workoutType !== 'fromScratch' ? '<button class="remove-workout">&times;</button>' : ''}
@@ -174,7 +196,7 @@ function updateButtons() {
             nextExerciseBtn.style.display = 'none';
             submitWorkoutBtn.style.display = 'block';
         } else {
-            nextExerciseBtn.textContent = 'Next Exercise';
+            nextExerciseBtn.textContent = 'Next';
             nextExerciseBtn.style.display = 'inline-block';
             submitWorkoutBtn.style.display = 'none';
         }
@@ -201,22 +223,18 @@ function addSet() {
     const setNumber = setsContainer.children.length + 1;
     setDiv.innerHTML = `
         <span>Set ${setNumber}:</span>
-        <button class="decrease-weight">-</button>
         <input type="number" class="weight" value="0" min="0"> lbs
-        <button class="increase-weight">+</button>
-        <button class="decrease-reps">-</button>
         <input type="number" class="reps" value="0" min="0"> reps
-        <button class="increase-reps">+</button>
     `;
     setsContainer.appendChild(setDiv);
 
     const weightInput = setDiv.querySelector('.weight');
     const repsInput = setDiv.querySelector('.reps');
 
-    setDiv.querySelector('.decrease-weight').addEventListener('click', () => changeValue(weightInput, -5));
-    setDiv.querySelector('.increase-weight').addEventListener('click', () => changeValue(weightInput, 5));
-    setDiv.querySelector('.decrease-reps').addEventListener('click', () => changeValue(repsInput, -1));
-    setDiv.querySelector('.increase-reps').addEventListener('click', () => changeValue(repsInput, 1));
+    // setDiv.querySelector('.decrease-weight').addEventListener('click', () => changeValue(weightInput, -5));
+    // setDiv.querySelector('.increase-weight').addEventListener('click', () => changeValue(weightInput, 5));
+    // setDiv.querySelector('.decrease-reps').addEventListener('click', () => changeValue(repsInput, -1));
+    // setDiv.querySelector('.increase-reps').addEventListener('click', () => changeValue(repsInput, 1));
 
     // Add event listeners to update workoutData when input values change
     weightInput.addEventListener('change', () => updateSetData(setNumber, 'weight', weightInput.value));

@@ -189,6 +189,14 @@ button:active {
     margin-bottom: 1rem;
 }
 
+#buttons-controls-test {
+    display: grid;
+    grid-template-areas: 
+    'div div'
+    'div div';
+    gap: 10px;
+}
+
 .set {
     display: flex;
     align-items: center;
@@ -197,6 +205,7 @@ button:active {
     padding: 0.5rem;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    justify-content: center;
 }
 
 .set input {
@@ -219,7 +228,7 @@ button:active {
 }
 
 #exerciseSearch, #muscleGroupSelect {
-    width: 100%;
+    width: -webkit-fill-available;
     padding: 0.5rem;
     margin-bottom: 0.5rem;
     border: 1px solid #ccc;
@@ -266,16 +275,16 @@ button:active {
 }
 
 #submitWorkoutBtn {
-    display: block;
+    /* display: block;
     width: 200px;
     margin: 2rem auto;
     padding: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.2rem; */
     background-color: #4CAF50;
-    color: white;
-    border: none;
+    /* color: white; */
+    /* border: none;
     border-radius: 4px;
-    transition: background-color 0.3s, transform 0.1s;
+    transition: background-color 0.3s, transform 0.1s; */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
