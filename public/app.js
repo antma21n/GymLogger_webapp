@@ -102,6 +102,7 @@ const workouts = {
     fromScratch: {
         name: 'Start from Scratch',
         musclegroups: [],
+        exercises: [],
         lastPerformed: 'N/A',
         description: 'Create a custom workout with exercises of your choice. (NOTE this is broken for submitting data dynamically)'
     }
